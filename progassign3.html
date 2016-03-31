@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<title>Event Guest Attendance Record </title>
+	<head>
+		<meta charset = "UTF-8"/>
+		<script src ="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>	/
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<style>
+			#warning {
+				color: yellow;
+				font-size: 13px;
+				font-weight: bold;
+				position: absolute;
+   				left: 400px;
+    			top: 70px;
+
+			}
+			body{
+				background-image: url(http://previews.123rf.com/images/apostrophe/apostrophe1202/apostrophe120200053/12252786-formal-background-with-vintage-red-sponge-texture-and-old-white-wall-illustration-with-yellow-gold-r-Stock-Illustration.jpg);				
+				background-size: cover;
+			}
+			#attendanceDiv {
+				color: white;
+				opacity: 1;
+
+			}
+			form {
+				position: absolute;
+   				left: 400px;
+    			top: 50px;
+			}
+
+			#printing {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				background: rgb(0, 0, 0); 
+				background: rgba(0, 0, 0, 0.5);
+				opacity: 0.75;
+				height: 1000px;
+				width: 300px
+			}
+		</style>
+	</head>
+	 <body>
+    <div id="attendanceDiv">
+    <form action = "">
+	    <input type="text" id="nameInput" placeholder="Full Name">
+	    <input type="text" id="orgInput" placeholder="Organization">
+	    <input type="text" id="numberInput" placeholder="Contact Number">
+	    <input type="submit" value="Submit">
+    </form>
+    <p id="warning"> WARNING: Attendance cannot be deleted once you've submitted your information. </p>
+    </div>
+    <div id="printing"></div>
+	    <script>
+	      var myDataRef = new Firebase("https://event-attendance.firebaseio.com/");
+	     $(document).ready(function(e) {
+		      $("form").submit(function(){
+		          var name = $("#nameInput").val();
+		          var org = $("#orgInput").val();
+		          var num = $("#numberInput").val();
+		          myDataRef.push({name: name, org: org, num: num});
+		      });
+		 });
+	      myDataRef.on("child_added", function(snapshop) {
+	        var message = snapshop.val();
+	        displayChatMessage(message.name, message.org, message.num);
+	      });
+	      function displayChatMessage(name, org, num) {
+	        $("<div/>").text(name + "    |    " + org + "    |    " + num).appendTo($("#attendanceDiv"));
+	        $("#attendanceDiv")[0].scrollTop = $('#attendanceDiv')[0].scrollHeight;
+	      };
+	    </script>
+  </body>
+</html>
